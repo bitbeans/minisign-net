@@ -61,7 +61,7 @@ namespace minisign
             }
 
             if (minisignPrivateKey == null)
-                throw new ArgumentException("missing minisignPrivateKey input", nameof(minisignPrivateKey));
+                throw new ArgumentException("missing minisignPrivateKey input", "minisignPrivateKey");
 
             if (string.IsNullOrEmpty(untrustedComment))
             {
@@ -77,12 +77,12 @@ namespace minisign
 
             if ((CommentPrefix + untrustedComment).Length > CommentMaxBytes)
             {
-                throw new ArgumentOutOfRangeException(nameof(untrustedComment), "untrustedComment too long");
+                throw new ArgumentOutOfRangeException("untrustedComment", "untrustedComment too long");
             }
 
             if ((TrustedCommentPrefix + trustedComment).Length > TrustedCommentMaxBytes)
             {
-                throw new ArgumentOutOfRangeException(nameof(trustedComment), "trustedComment too long");
+                throw new ArgumentOutOfRangeException("trustedComment", "trustedComment too long");
             }
 
             if (string.IsNullOrEmpty(outputFolder))
@@ -156,7 +156,7 @@ namespace minisign
         {
             if (string.IsNullOrEmpty(password))
             {
-                throw new ArgumentNullException(nameof(password), "password can not be null");
+                throw new ArgumentNullException("password", "password can not be null");
             }
 
             if (writeOutputFiles)
@@ -173,7 +173,7 @@ namespace minisign
                 //validate the keyPairFileName
                 if (string.IsNullOrEmpty(keyPairFileName))
                 {
-                    throw new ArgumentNullException(nameof(keyPairFileName), "keyPairFileName can not be empty");
+                    throw new ArgumentNullException("keyPairFileName", "keyPairFileName can not be empty");
                 }
             }
 
@@ -278,10 +278,10 @@ namespace minisign
             }
 
             if (signature == null)
-                throw new ArgumentException("missing signature input", nameof(signature));
+                throw new ArgumentException("missing signature input", "signature");
 
             if (publicKey == null)
-                throw new ArgumentException("missing publicKey input", nameof(publicKey));
+                throw new ArgumentException("missing publicKey input", "publicKey");
 
             if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
             // load the file into memory
@@ -316,13 +316,13 @@ namespace minisign
             string globalSignature)
         {
             if (string.IsNullOrEmpty(signatureString))
-                throw new ArgumentException("signatureString can not be null", nameof(signatureString));
+                throw new ArgumentException("signatureString can not be null", "signatureString");
 
             if (string.IsNullOrEmpty(trustedComment))
-                throw new ArgumentException("trustedComment can not be null", nameof(trustedComment));
+                throw new ArgumentException("trustedComment can not be null", "trustedComment");
 
             if (string.IsNullOrEmpty(globalSignature))
-                throw new ArgumentException("globalSignature can not be null", nameof(globalSignature));
+                throw new ArgumentException("globalSignature can not be null", "globalSignature");
 
             return LoadSignature(Convert.FromBase64String(signatureString), Encoding.UTF8.GetBytes(trustedComment),
                 Convert.FromBase64String(globalSignature));
@@ -383,13 +383,13 @@ namespace minisign
         public static MinisignSignature LoadSignature(byte[] signature, byte[] trustedComment, byte[] globalSignature)
         {
             if (signature == null)
-                throw new ArgumentException("missing signature input", nameof(signature));
+                throw new ArgumentException("missing signature input", "signature");
 
             if (trustedComment == null)
-                throw new ArgumentException("missing trustedComment input", nameof(trustedComment));
+                throw new ArgumentException("missing trustedComment input", "trustedComment");
 
             if (globalSignature == null)
-                throw new ArgumentException("missing globalSignature input", nameof(globalSignature));
+                throw new ArgumentException("missing globalSignature input", "globalSignature");
 
             var minisignSignature = new MinisignSignature
             {
@@ -418,7 +418,7 @@ namespace minisign
         public static MinisignPublicKey LoadPublicKeyFromString(string publicKeyString)
         {
             if (string.IsNullOrEmpty(publicKeyString))
-                throw new ArgumentException("publicKeyString can not be null", nameof(publicKeyString));
+                throw new ArgumentException("publicKeyString can not be null", "publicKeyString");
 
             return LoadPublicKey(Convert.FromBase64String(publicKeyString));
         }
@@ -473,7 +473,7 @@ namespace minisign
         public static MinisignPublicKey LoadPublicKey(byte[] publicKey)
         {
             if (publicKey == null)
-                throw new ArgumentException("missing publicKey input", nameof(publicKey));
+                throw new ArgumentException("missing publicKey input", "publicKey");
 
             var minisignPublicKey = new MinisignPublicKey
             {
@@ -503,10 +503,10 @@ namespace minisign
         public static MinisignPrivateKey LoadPrivateKeyFromString(string privateKeyString, string password)
         {
             if (string.IsNullOrEmpty(privateKeyString))
-                throw new ArgumentException("privateKeyString can not be null", nameof(privateKeyString));
+                throw new ArgumentException("privateKeyString can not be null", "privateKeyString");
 
             if (string.IsNullOrEmpty(password))
-                throw new ArgumentException("password can not be null", nameof(password));
+                throw new ArgumentException("password can not be null", "password");
 
             return LoadPrivateKey(Convert.FromBase64String(privateKeyString), Encoding.UTF8.GetBytes(password));
         }
@@ -537,7 +537,7 @@ namespace minisign
 
             if (string.IsNullOrEmpty(password))
             {
-                throw new ArgumentException("password can not be null", nameof(password));
+                throw new ArgumentException("password can not be null", "password");
             }
 
             var privateKeyLines = File.ReadLines(privateKeyFile).Take(2).ToList();
@@ -569,10 +569,10 @@ namespace minisign
         public static MinisignPrivateKey LoadPrivateKey(byte[] privateKey, byte[] password)
         {
             if (privateKey == null)
-                throw new ArgumentException("missing privateKey input", nameof(privateKey));
+                throw new ArgumentException("missing privateKey input", "privateKey");
 
             if (password == null)
-                throw new ArgumentException("missing password input", nameof(password));
+                throw new ArgumentException("missing password input", "password");
 
             var minisignPrivateKey = new MinisignPrivateKey
             {
