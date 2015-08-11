@@ -17,26 +17,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		travis-osx-deps.sh = travis-osx-deps.sh
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{164D206B-0F53-4FAE-B963-1269FC0B0170}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\..\Visual Studio 2013\Projects\StreamCryptor\.nuget\NuGet.Config = ..\..\..\Visual Studio 2013\Projects\StreamCryptor\.nuget\NuGet.Config
-		..\..\..\Visual Studio 2013\Projects\StreamCryptor\.nuget\NuGet.targets = ..\..\..\Visual Studio 2013\Projects\StreamCryptor\.nuget\NuGet.targets
-		..\..\..\Visual Studio 2013\Projects\StreamCryptor\.nuget\packages.config = ..\..\..\Visual Studio 2013\Projects\StreamCryptor\.nuget\packages.config
-	EndProjectSection
-EndProject
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "NuGet", "..\..\..\Visual Studio 2013\Projects\StreamCryptor\.nuget\NuGet.exe", "{9F8BBA65-7A8B-4865-8906-8314DBBD2CE7}"
-	ProjectSection(DebuggerProjectSystem) = preProject
-		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = C:\Users\c.hermann\Documents\Visual Studio 2013\Projects\StreamCryptor\.nuget\NuGet.exe
-		RemoteMachine = BITBEANS-HOME
-		StartingDirectory = C:\Users\c.hermann\Documents\Visual Studio 2013\Projects\StreamCryptor\.nuget
-		Environment = Standard
-		LaunchingEngine = 00000000-0000-0000-0000-000000000000
-		UseLegacyDebugEngines = No
-		LaunchSQLEngine = No
-		AttachLaunchAction = No
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,16 +41,8 @@ Global
 		{23C069F1-F6CF-47AA-BF81-A87F826190C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23C069F1-F6CF-47AA-BF81-A87F826190C2}.Release|x86.ActiveCfg = Release|Any CPU
 		{23C069F1-F6CF-47AA-BF81-A87F826190C2}.Release|x86.Build.0 = Release|Any CPU
-		{9F8BBA65-7A8B-4865-8906-8314DBBD2CE7}.Debug|Any CPU.ActiveCfg = Release|x86
-		{9F8BBA65-7A8B-4865-8906-8314DBBD2CE7}.Debug|x86.ActiveCfg = Release|x86
-		{9F8BBA65-7A8B-4865-8906-8314DBBD2CE7}.Release|Any CPU.ActiveCfg = Release|x86
-		{9F8BBA65-7A8B-4865-8906-8314DBBD2CE7}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{164D206B-0F53-4FAE-B963-1269FC0B0170} = {68F88C1E-5940-4BF1-B934-A3F28DAF0085}
-		{9F8BBA65-7A8B-4865-8906-8314DBBD2CE7} = {164D206B-0F53-4FAE-B963-1269FC0B0170}
 	EndGlobalSection
 EndGlobal
