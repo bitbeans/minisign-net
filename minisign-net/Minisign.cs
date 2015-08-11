@@ -17,8 +17,8 @@ namespace minisign
     {
         private const int CommentMaxBytes = 1024;
         private const int TrustedCommentMaxBytes = 8192;
-        private const int Keynumbytes = 8;
-        private const int Keysaltbytes = 32;
+        private const int KeyNumBytes = 8;
+        private const int KeySaltBytes = 32;
         private const string Sigalg = "Ed";
         private const string Kdfalg = "Sc";
         private const string Chkalg = "B2";
@@ -180,7 +180,7 @@ namespace minisign
             var minisignKeyPair = new MinisignKeyPair();
             var minisignPrivateKey = new MinisignPrivateKey();
             var keyPair = PublicKeyAuth.GenerateKeyPair();
-            var keyId = SodiumCore.GetRandomBytes(Keynumbytes);
+            var keyId = SodiumCore.GetRandomBytes(KeyNumBytes);
             var kdfSalt = SodiumCore.GetRandomBytes(32);
 
             minisignPrivateKey.PublicKey = keyPair.PublicKey;
@@ -599,7 +599,7 @@ namespace minisign
                 throw new CorruptPrivateKeyException("bad KdfAlgorithm");
             }
 
-            if (minisignPrivateKey.KdfSalt.Length != Keysaltbytes)
+            if (minisignPrivateKey.KdfSalt.Length != KeySaltBytes)
             {
                 throw new CorruptPrivateKeyException("bad KdfSalt length");
             }
@@ -615,7 +615,7 @@ namespace minisign
             minisignPrivateKey.SecretKey = ArrayHelpers.SubArray(decryptedKeyData, 8, 64);
             minisignPrivateKey.Checksum = ArrayHelpers.SubArray(decryptedKeyData, 72, 32);
 
-            if (minisignPrivateKey.KeyId.Length != Keynumbytes)
+            if (minisignPrivateKey.KeyId.Length != KeyNumBytes)
             {
                 throw new CorruptPrivateKeyException("bad KeyId length");
             }
