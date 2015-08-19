@@ -49,6 +49,7 @@
     <Compile Include="Exceptions\CorruptPrivateKeyException.cs" />
     <Compile Include="Exceptions\CorruptPublicKeyException.cs" />
     <Compile Include="Exceptions\CorruptSignatureException.cs" />
+    <Compile Include="Exceptions\FileSizeExceededException.cs" />
     <Compile Include="Minisign.cs" />
     <Compile Include="Helper\ArrayHelpers.cs" />
     <Compile Include="Helper\EncryptionHelpers.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Security;
 using System.Text;
 using minisign.Exceptions;
@@ -15,6 +16,7 @@ namespace minisign
     /// </summary>
     public static class Minisign
     {
+        private const long MaxMessageFileSize = 1024000000;
         private const int CommentMaxBytes = 1024;
         private const int TrustedCommentMaxBytes = 8192;
         private const int KeyNumBytes = 8;
@@ -204,14 +206,14 @@ namespace minisign
                 minisignPrivateKey.KdfSalt,
                 PasswordHash.Strength.Sensitive,
                 104);
-
+            
             var encryptedKeyData = EncryptionHelpers.Xor(dataToProtect, encryptionKey);
             // set up the public key
             var minisignPublicKey = new MinisignPublicKey();
             minisignPublicKey.KeyId = keyId;
             minisignPublicKey.PublicKey = keyPair.PublicKey;
             minisignPublicKey.SignatureAlgorithm = Encoding.UTF8.GetBytes(Sigalg);
-
+            keyPair.Dispose();
             if (writeOutputFiles)
             {
                 var privateKeyOutputFileName = Path.Combine(outputFolder, keyPairFileName + PrivateKeyFileSuffix);
@@ -644,14 +646,28 @@ namespace minisign
         ///     Loads a file into memory.
         /// </summary>
         /// <param name="messageFile">Path to the file.</param>
-        /// <exception cref="FileNotFoundException"></exception>
         /// <returns>The file as byte array.</returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="FileSizeExceededException"></exception>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="SecurityException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="DirectoryNotFoundException"></exception>
         private static byte[] LoadMessageFile(string messageFile)
         {
-            //TODO: validate file size
+            if (messageFile == null)
+                throw new ArgumentException("missing messageFile input", "messageFile");
+
             if (!File.Exists(messageFile))
             {
                 throw new FileNotFoundException("could not find messageFile");
+            }
+
+            var messageFileLength = new FileInfo(messageFile);
+            if (messageFileLength.Length >= MaxMessageFileSize)
+            {
+                throw new FileSizeExceededException("data has to be smaller than 1 Gb");
             }
 
             return File.ReadAllBytes(messageFile);
