@@ -13,4 +13,5 @@ script:
   - bash travis-build-libsodium.sh
   - xbuild /p:Configuration=Debug minisign-net.sln
   - ls -la ./Tests/bin/Debug/
+  - ls -la ./minisign-net/bin/Debug/
   - mono --runtime=v4.0 ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Debug/Tests.dll
