@@ -59,6 +59,9 @@
     <Compile Include="BaseExceptionTests.cs" />
     <Compile Include="BaseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="sodium.dll.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Testfolder\createDirectory">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
