@@ -11,5 +11,6 @@ install:
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - bash travis-build-libsodium.sh
-  - xbuild /p:Configuration=Release minisign-net.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Release/Tests.dll
+  - xbuild /p:Configuration=Debug minisign-net.sln
+  - ls -la ./Tests/bin/Debug/
+  - mono --runtime=v4.0 ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Debug/Tests.dll
