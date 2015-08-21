@@ -14,4 +14,5 @@ script:
   - xbuild /p:Configuration=Debug minisign-net.sln
   - ls -la ./Tests/bin/Debug/
   - ls -la ./minisign-net/bin/Debug/
-  - mono --runtime=v4.0 ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Debug/Tests.dll
+  - ldconfig -p | grep libsodium
+  - MONO_LOG_LEVEL=debug mono --runtime=v4.0 ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Debug/Tests.dll
