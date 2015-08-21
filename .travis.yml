@@ -1,8 +1,12 @@
 language: csharp
-sudo: true
+sudo: false
 os:
  - osx
  - linux
+before_script:
+  - sudo add-apt-repository ppa:anton+/dnscrypt -y
+  - sudo apt-get update -q
+  - sudo apt-get install libsodium
 mono:
   - latest
 solution: minisign-net.sln
@@ -10,6 +14,5 @@ install:
   - nuget restore minisign-net.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - bash travis-build-libsodium.sh
   - xbuild /p:Configuration=Release minisign-net.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Debug/Tests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Release/Tests.dll
