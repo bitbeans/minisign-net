@@ -3,7 +3,7 @@ sudo: false
 addons:
   apt:
     packages:
-	  - libsodium13
+    - libsodium13
 os:
  - linux
 mono:
