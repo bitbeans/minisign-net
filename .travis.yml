@@ -1,19 +1,17 @@
-language: c
-
-sudo: true
-
+language: csharp
+sudo: false
+addons:
+  apt:
+    packages:
+	  - libsodium13
 os:
  - linux
- 
-env:
- - TRAVIS_OS_UNAME=$(uname -s)
-
+mono:
+  - latest
+solution: minisign-net.sln
 install:
- - if [[ $TRAVIS_OS_UNAME = 'Linux' ]]; then bash travis-linux-deps.sh; fi
- 
-before_script:
- - bash travis-build-libsodium.sh
- 
+  - nuget restore minisign-net.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
- - xbuild minisign-net.sln
- - bash nunit-console.sh ./Tests/bin/Debug/Tests.dll
+  - xbuild /p:Configuration=Debug minisign-net.sln
+  - mono --runtime=v4.0 ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Tests/bin/Debug/Tests.dll
