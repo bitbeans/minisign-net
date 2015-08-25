@@ -2,8 +2,6 @@ language: csharp
 sudo: false
 addons:
   apt:
-    sources:
-    - ppa:chris-lea/libsodium
     packages:
     - libsodium13
 os:
