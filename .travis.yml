@@ -1,9 +1,9 @@
-language: csharp
 sudo: false
+language: csharp
 addons:
   apt:
     packages:
-    - libsodium13
+    - libsodium-dev
 os:
  - linux
 mono:
