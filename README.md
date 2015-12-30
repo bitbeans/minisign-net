@@ -1,4 +1,4 @@
-# minisign-net [![Build status](https://img.shields.io/appveyor/ci/bitbeans/minisign-net.svg?style=flat-square)](https://ci.appveyor.com/project/bitbeans/minisign-net) [![Build Status](https://img.shields.io/travis/bitbeans/minisign-net.svg?style=flat-square)](https://travis-ci.org/bitbeans/minisign-net) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/bitbeans/minisign-net/blob/master/LICENSE.md)
+# minisign-net [![Build status](https://img.shields.io/appveyor/ci/bitbeans/minisign-net.svg?style=flat-square)](https://ci.appveyor.com/project/bitbeans/minisign-net) [![Build Status](https://img.shields.io/travis/bitbeans/minisign-net.svg?style=flat-square)](https://travis-ci.org/bitbeans/minisign-net) [![NuGet Version](https://img.shields.io/nuget/v/minisign-net.svg?style=flat-square)](https://www.nuget.org/packages/minisign-net/) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/bitbeans/minisign-net/blob/master/LICENSE.md)
 
 
 minisign-net is a .NET port of [minisign](https://github.com/jedisct1/minisign) written by @jedisct1 Frank Denis. minisign-net does not have a command line, it`s just a base library to handle and create minisign files programmatically. If you are looking for a command line tool, please use the [original minisign software](https://jedisct1.github.io/minisign/). There are pre-compiled versions for any os.
@@ -15,6 +15,8 @@ public static string Sign(string fileToSign, MinisignPrivateKey minisignPrivateK
 ### Validate a file
 ```csharp
 public static bool ValidateSignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
+
+public static bool ValidateSignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
 ```
 
 ### Generate a key pair

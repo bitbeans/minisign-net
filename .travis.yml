@@ -2,6 +2,8 @@ sudo: false
 language: csharp
 addons:
   apt:
+    sources:
+    - libsodium
     packages:
     - libsodium-dev
 os:

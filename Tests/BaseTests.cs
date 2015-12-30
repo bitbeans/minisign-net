@@ -53,6 +53,29 @@ namespace Tests
         }
 
         [Test]
+        public void Sign2Test()
+        {
+            const string testfolder = "Testfolder";
+            const string expected = "9d6f33b5e347042e";
+            const string seckeypass = "7e725ac9f52336f74dc54bbe2912855f79baacc08b008437809fq5527f1b2256";
+            const string privateKey = "456453634232aeb543fbea3467ad996ac237b38646bcbc12e6232fbc0a8cd9a1ed46c7263af200000002000000000000004000000000992f22d875591d3bb7dc3f77caba3229e2f7b8afe655140bafabcb6c5d8b259366a2897624de65743de71f8f2dcc545a96c4b530ffd796d92f35eb02425f4196ab9a37ff2f542774d676625f8de689fa2da3e0a0250efd58347c35b927ca49ec4d93687be59d6e1a";
+            var minisignPrivateKey = Minisign.LoadPrivateKey(Utilities.HexToBinary(privateKey), Encoding.UTF8.GetBytes(seckeypass));
+
+            var file = Path.Combine(testfolder, "testfile.jpg");
+            var fileBinary = File.ReadAllBytes(file);
+            var signedFile = Minisign.Sign(file, minisignPrivateKey);
+
+            var minisignSignature = Minisign.LoadSignatureFromFile(signedFile);
+            var minisignPublicKey = Minisign.LoadPublicKeyFromFile(Path.Combine(testfolder, "test.pub"));
+            Assert.AreEqual(expected, Utilities.BinaryToHex(minisignSignature.KeyId));
+            Assert.AreEqual(expected, Utilities.BinaryToHex(minisignPublicKey.KeyId));
+
+            Assert.AreEqual(true, Minisign.ValidateSignature(fileBinary, minisignSignature, minisignPublicKey));
+            File.Delete(signedFile);
+        }
+        
+
+        [Test]
         public void LoadSignatureFromStringTest()
         {
             const string expected = "9d6f33b5e347042e";
