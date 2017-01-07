@@ -1,5 +1,5 @@
 language: csharp
-
+sudo: required
 mono:
  - latest
  - 4.4.1
