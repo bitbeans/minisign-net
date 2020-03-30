@@ -1,7 +1,6 @@
-# minisign-net [![Build status](https://img.shields.io/appveyor/ci/bitbeans/minisign-net.svg?style=flat-square)](https://ci.appveyor.com/project/bitbeans/minisign-net) [![Build Status](https://img.shields.io/travis/bitbeans/minisign-net.svg?style=flat-square)](https://travis-ci.org/bitbeans/minisign-net) [![NuGet Version](https://img.shields.io/nuget/v/minisign-net.svg?style=flat-square)](https://www.nuget.org/packages/minisign-net/) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/bitbeans/minisign-net/blob/master/LICENSE.md)
+# Minisign.Net 
 
-
-minisign-net is a .NET port of [minisign](https://github.com/jedisct1/minisign) written by @jedisct1 Frank Denis. minisign-net does not have a command line, it`s just a base library to handle and create minisign files programmatically. If you are looking for a command line tool, please use the [original minisign software](https://jedisct1.github.io/minisign/). There are pre-compiled versions for any os.
+Minisign.Net is a .NET port of [minisign](https://github.com/jedisct1/minisign) written by @jedisct1 Frank Denis. If you are looking for a command line tool, please use the [original minisign software](https://jedisct1.github.io/minisign/). There are pre-compiled versions for any os.
 
 [minisign](https://github.com/jedisct1/minisign/blob/master/LICENSE) Copyright (c) 2015 - 2017 Frank Denis 
 
@@ -51,19 +50,6 @@ public static MinisignPrivateKey LoadPrivateKeyFromFile(string privateKeyFile, s
 public static MinisignPrivateKey LoadPrivateKey(byte[] privateKey, byte[] password)
 ```
 
-## This project uses the following libraries
-
-  * [libsodium-net] - A secure cryptographic library
-
-
-[libsodium-net]:https://github.com/adamcaudill/libsodium-net
-
-## Requirements
-
-This library targets **.NET 4.5**.
-
-## Examples
-see [Unit Tests](https://github.com/bitbeans/minisign-net/tree/master/Tests)
 
 ## License
 [MIT](https://en.wikipedia.org/wiki/MIT_License)

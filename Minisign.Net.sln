@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29920.165
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minisign.Net", "Minisign.Net\Minisign.Net.csproj", "{D9E98B5B-901C-4898-8BB0-6FCDF83C662A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Minisign.Net.Tests", "Minisign.Net.Tests\Minisign.Net.Tests.csproj", "{D2A51C27-F286-45A2-A3B9-557B06D73355}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{87D6D941-F38E-46AC-9C32-E343FE41C382}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D9E98B5B-901C-4898-8BB0-6FCDF83C662A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9E98B5B-901C-4898-8BB0-6FCDF83C662A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9E98B5B-901C-4898-8BB0-6FCDF83C662A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9E98B5B-901C-4898-8BB0-6FCDF83C662A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2A51C27-F286-45A2-A3B9-557B06D73355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2A51C27-F286-45A2-A3B9-557B06D73355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2A51C27-F286-45A2-A3B9-557B06D73355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2A51C27-F286-45A2-A3B9-557B06D73355}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4BD304BC-C37E-43A1-A2E8-7AE252DAE641}
+	EndGlobalSection
+EndGlobal
