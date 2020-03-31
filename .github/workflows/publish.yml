@@ -17,3 +17,4 @@ jobs:
           PROJECT_FILE_PATH: Minisign.Net/Minisign.Net.csproj
           TAG_FORMAT: v.* 
           PACKAGE_NAME: minisign-net
+          NUGET_KEY: ${{secrets.NUGET_KEY}}  
