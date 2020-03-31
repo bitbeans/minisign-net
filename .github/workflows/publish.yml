@@ -15,4 +15,5 @@ jobs:
         uses: rohith/publish-nuget@v2
         with:
           PROJECT_FILE_PATH: Minisign.Net/Minisign.Net.csproj
+          TAG_FORMAT: v.* 
           PACKAGE_NAME: minisign-net
