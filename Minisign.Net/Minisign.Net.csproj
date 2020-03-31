@@ -15,6 +15,8 @@
     <PackageProjectUrl>https://github.com/bitbeans/minisign-net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/bitbeans/minisign-net</RepositoryUrl>
     <PackageReleaseNotes>.NET Standard 2.0</PackageReleaseNotes>
+    <PackageId>minisign-net</PackageId>
+    <PackageTags>minisign libsodium</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
