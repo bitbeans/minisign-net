@@ -278,9 +278,7 @@ namespace Minisign
 		public static bool ValidateSignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
 		{
 			if (filePath != null && !File.Exists(filePath))
-			{
 				throw new FileNotFoundException("could not find filePath");
-			}
 
 			if (signature == null)
 				throw new ArgumentException("missing signature input", nameof(signature));
@@ -289,18 +287,28 @@ namespace Minisign
 				throw new ArgumentException("missing publicKey input", nameof(publicKey));
 
 			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
-			// load the file into memory
+
 			var file = LoadMessageFile(filePath);
-			// verify the signature
-			if (PublicKeyAuth.VerifyDetached(signature.Signature, file, publicKey.PublicKey))
+
+			if (!signature.IsHashed)
 			{
-				// verify the trusted comment
-				return PublicKeyAuth.VerifyDetached(signature.GlobalSignature,
-					ArrayHelpers.ConcatArrays(signature.Signature, signature.TrustedComment), publicKey.PublicKey);
+				// Legacy: Ed25519(message)
+				if (!PublicKeyAuth.VerifyDetached(signature.Signature, file, publicKey.PublicKey)) return false;
+			}
+			else
+			{
+				// Hashed: Ed25519(Blake2b-512(message))
+				var blake = GenericHash.Hash(file, null, 64);
+				if (!PublicKeyAuth.VerifyDetached(signature.Signature, blake, publicKey.PublicKey)) return false;
 			}
 
-			return false;
+			// Global signature is the same for both formats
+			return PublicKeyAuth.VerifyDetached(
+				signature.GlobalSignature,
+				ArrayHelpers.ConcatArrays(signature.Signature, signature.TrustedComment),
+				publicKey.PublicKey);
 		}
+
 
 		/// <summary>
 		///     Validate a file with a MinisignSignature and a MinisignPublicKey object.
@@ -325,16 +333,26 @@ namespace Minisign
 				throw new ArgumentException("missing publicKey input", nameof(publicKey));
 
 			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
-			// verify the signature
-			if (PublicKeyAuth.VerifyDetached(signature.Signature, message, publicKey.PublicKey))
+
+			if (!signature.IsHashed)
 			{
-				// verify the trusted comment
-				return PublicKeyAuth.VerifyDetached(signature.GlobalSignature,
-					ArrayHelpers.ConcatArrays(signature.Signature, signature.TrustedComment), publicKey.PublicKey);
+				// Legacy: Ed25519(message)
+				if (!PublicKeyAuth.VerifyDetached(signature.Signature, message, publicKey.PublicKey)) return false;
+			}
+			else
+			{
+				// Hashed: Ed25519(Blake2b-512(message))
+				var blake = GenericHash.Hash(message, null, 64);
+				if (!PublicKeyAuth.VerifyDetached(signature.Signature, blake, publicKey.PublicKey)) return false;
 			}
 
-			return false;
+			return PublicKeyAuth.VerifyDetached(
+				signature.GlobalSignature,
+				ArrayHelpers.ConcatArrays(signature.Signature, signature.TrustedComment),
+				publicKey.PublicKey);
 		}
+
+
 
 		#endregion
 
@@ -430,15 +448,29 @@ namespace Minisign
 			if (globalSignature == null)
 				throw new ArgumentException("missing globalSignature input", nameof(globalSignature));
 
-			var minisignSignature = new MinisignSignature
+			var result = new MinisignSignature()
 			{
 				SignatureAlgorithm = ArrayHelpers.SubArray(signature, 0, 2),
 				KeyId = ArrayHelpers.SubArray(signature, 2, 8),
-				Signature = ArrayHelpers.SubArray(signature, 10),
 				TrustedComment = trustedComment,
 				GlobalSignature = globalSignature
 			};
-			return minisignSignature;
+
+			var alg = Encoding.UTF8.GetString(result.SignatureAlgorithm);
+				result.IsHashed = alg == "ED";
+
+			if (!result.IsHashed)
+			{
+				// Legacy minisign: Ed + keyid(8) + raw signature
+				result.Signature = ArrayHelpers.SubArray(signature, 10);
+			}
+			else
+			{
+				// Hashed minisign: ED + keyid(8) + signature(64)
+				result.Signature = ArrayHelpers.SubArray(signature, 10, 64);
+			}
+
+			return result;
 		}
 
 		#endregion
