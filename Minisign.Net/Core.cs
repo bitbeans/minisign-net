@@ -288,17 +288,18 @@ namespace Minisign
 
 			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
 
-			var file = LoadMessageFile(filePath);
 
 			if (!signature.IsHashed)
 			{
+				var file = LoadMessageFile(filePath);
+
 				// Legacy: Ed25519(message)
 				if (!PublicKeyAuth.VerifyDetached(signature.Signature, file, publicKey.PublicKey)) return false;
 			}
 			else
 			{
 				// Hashed: Ed25519(Blake2b-512(message))
-				var blake = GenericHash.Hash(file, null, 64);
+				var blake = ComputeBlake2bFileHash(filePath);
 				if (!PublicKeyAuth.VerifyDetached(signature.Signature, blake, publicKey.PublicKey)) return false;
 			}
 
@@ -740,6 +741,33 @@ namespace Minisign
 			}
 
 			return File.ReadAllBytes(messageFile);
+		}
+
+		/// <summary>
+		///     Computes a BLAKE2b-512 hash of a file without loading it fully into memory.
+		///     Used for hashed minisign signatures.
+		/// </summary>
+		/// <param name="messageFile">Path to the file.</param>
+		/// <returns>64-byte BLAKE2b hash of the file contents.</returns>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="FileNotFoundException"></exception>
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="SecurityException"></exception>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
+		private static byte[] ComputeBlake2bFileHash(string messageFile)
+		{
+			if (messageFile == null)
+				throw new ArgumentException("missing messageFile input", nameof(messageFile));
+
+			if (!File.Exists(messageFile))
+				throw new FileNotFoundException("could not find messageFile");
+
+			using (var stream = File.OpenRead(messageFile))
+			using (var hashStream = new GenericHash.GenericHashAlgorithm((byte[])null, 64))
+			{
+				return hashStream.ComputeHash(stream);
+			}
 		}
 
 		/// <summary>
