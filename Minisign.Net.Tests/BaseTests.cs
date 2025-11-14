@@ -67,6 +67,29 @@ namespace Tests
             File.Delete(signedFile);
         }
 
+        [Fact]
+        public void ValidateLegacySignature()
+        {
+            var file = Path.Combine("Data", "testfile.jpg");
+            var fileBinary = File.ReadAllBytes(file);
+
+            var minisignSignature = Core.LoadSignatureFromFile(Path.Combine("Data", "test.jpg.minisig"));
+            var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test.pub"));
+
+            Assert.True(Core.ValidateSignature(file, minisignSignature, minisignPublicKey));
+        }
+
+        [Fact]
+        public void ValidateHashedSignature()
+        {
+            var file = Path.Combine("Data", "testfile.jpg");
+            var fileBinary = File.ReadAllBytes(file);
+
+            var minisignSignature = Core.LoadSignatureFromFile(Path.Combine("Data", "test.jpg.minisig-hashed"));
+            var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test2.pub"));
+
+            Assert.True(Core.ValidateSignature(file, minisignSignature, minisignPublicKey));
+        }
 
         [Fact]
         public void LoadSignatureFromStringTest()
