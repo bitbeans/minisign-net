@@ -7,11 +7,11 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Authors>bitbeans</Authors>
     <Company>bitbeans</Company>
-    <Copyright>Copyright © 2017 - 2020 bitbeans</Copyright>
+    <Copyright>Copyright © 2017 - 2025 bitbeans</Copyright>
     <Description>Minisign.Net is a .NET port of minisign</Description>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
-    <FileVersion>0.2.0.0</FileVersion>
-    <Version>0.2.0</Version>
+    <AssemblyVersion>0.2.1.0</AssemblyVersion>
+    <FileVersion>0.2.1.0</FileVersion>
+    <Version>0.2.1</Version>
     <PackageProjectUrl>https://github.com/bitbeans/minisign-net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/bitbeans/minisign-net</RepositoryUrl>
     <PackageReleaseNotes>.NET Standard 2.0</PackageReleaseNotes>
@@ -20,7 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sodium.Core" Version="1.2.3" />
+    <PackageReference Include="Sodium.Core" Version="1.4.0" />
   </ItemGroup>
 
 </Project>

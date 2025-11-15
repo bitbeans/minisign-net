@@ -4,7 +4,7 @@
 
 Minisign.Net is a .NET port of [minisign](https://github.com/jedisct1/minisign) written by @jedisct1 Frank Denis. If you are looking for a command line tool, please use the [original minisign software](https://jedisct1.github.io/minisign/). There are pre-compiled versions for any os.
 
-[minisign](https://github.com/jedisct1/minisign/blob/master/LICENSE) Copyright (c) 2015 - 2017 Frank Denis 
+[minisign](https://github.com/jedisct1/minisign/blob/master/LICENSE) Copyright (c) 2015 - 2025 Frank Denis 
 
 ## Available Methods
 
