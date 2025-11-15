@@ -1,6 +1,6 @@
 # Minisign.Net 
 
-![.NET Core](https://github.com/bitbeans/minisign-net/workflows/.NET%20Core/badge.svg)
+![.NET Core](https://github.com/bitbeans/minisign-net/workflows/.NET%208/badge.svg)
 
 Minisign.Net is a .NET port of [minisign](https://github.com/jedisct1/minisign) written by @jedisct1 Frank Denis. If you are looking for a command line tool, please use the [original minisign software](https://jedisct1.github.io/minisign/). There are pre-compiled versions for any os.
 
