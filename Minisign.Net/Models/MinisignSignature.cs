@@ -7,6 +7,5 @@
         public byte[] Signature { get; set; }
         public byte[] GlobalSignature { get; set; }
         public byte[] TrustedComment { get; set; }
-        public bool IsHashed { get; set; }
     }
 }

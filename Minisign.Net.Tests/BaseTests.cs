@@ -27,7 +27,7 @@ namespace Tests
         }
 
         [Fact]
-        public void SignTest()
+        public void SignAndValidataLegacyTest()
         {
             const string expected = "9d6f33b5e347042e";
             const string seckeypass = "7e725ac9f52336f74dc54bbe2912855f79baacc08b008437809fq5527f1b2256";
@@ -35,19 +35,19 @@ namespace Tests
             var minisignPrivateKey = Core.LoadPrivateKey(Utilities.HexToBinary(privateKey), Encoding.UTF8.GetBytes(seckeypass));
 
             var file = Path.Combine("Data", "testfile.jpg");
-            var signedFile = Core.Sign(file, minisignPrivateKey);
+            var signedFile = Core.SignLegacy(file, minisignPrivateKey);
 
             var minisignSignature = Core.LoadSignatureFromFile(signedFile);
             var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test.pub"));
             Assert.Equal(expected, Utilities.BinaryToHex(minisignSignature.KeyId));
             Assert.Equal(expected, Utilities.BinaryToHex(minisignPublicKey.KeyId));
 
-            Assert.True(Core.ValidateSignature(file, minisignSignature, minisignPublicKey));
+            Assert.True(Core.ValidateLegacySignature(file, minisignSignature, minisignPublicKey));
             File.Delete(signedFile);
         }
 
         [Fact]
-        public void Sign2Test()
+        public void SignAndValidateLegacy2Test()
         {
             const string expected = "9d6f33b5e347042e";
             const string seckeypass = "7e725ac9f52336f74dc54bbe2912855f79baacc08b008437809fq5527f1b2256";
@@ -56,14 +56,55 @@ namespace Tests
 
             var file = Path.Combine("Data", "testfile.jpg");
             var fileBinary = File.ReadAllBytes(file);
-            var signedFile = Core.Sign(file, minisignPrivateKey);
+            var signedFile = Core.SignLegacy(file, minisignPrivateKey);
 
             var minisignSignature = Core.LoadSignatureFromFile(signedFile);
             var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test.pub"));
             Assert.Equal(expected, Utilities.BinaryToHex(minisignSignature.KeyId));
             Assert.Equal(expected, Utilities.BinaryToHex(minisignPublicKey.KeyId));
 
-            Assert.True(Core.ValidateSignature(fileBinary, minisignSignature, minisignPublicKey));
+            Assert.True(Core.ValidateLegacySignature(fileBinary, minisignSignature, minisignPublicKey));
+            File.Delete(signedFile);
+        }
+
+        [Fact]
+        public void SignAndValidataHashedTest()
+        {
+            const string expected = "9d6f33b5e347042e";
+            const string seckeypass = "7e725ac9f52336f74dc54bbe2912855f79baacc08b008437809fq5527f1b2256";
+            const string privateKey = "456453634232aeb543fbea3467ad996ac237b38646bcbc12e6232fbc0a8cd9a1ed46c7263af200000002000000000000004000000000992f22d875591d3bb7dc3f77caba3229e2f7b8afe655140bafabcb6c5d8b259366a2897624de65743de71f8f2dcc545a96c4b530ffd796d92f35eb02425f4196ab9a37ff2f542774d676625f8de689fa2da3e0a0250efd58347c35b927ca49ec4d93687be59d6e1a";
+            var minisignPrivateKey = Core.LoadPrivateKey(Utilities.HexToBinary(privateKey), Encoding.UTF8.GetBytes(seckeypass));
+
+            var file = Path.Combine("Data", "testfile.jpg");
+            var signedFile = Core.SignHashed(file, minisignPrivateKey);
+
+            var minisignSignature = Core.LoadSignatureFromFile(signedFile);
+            var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test.pub"));
+            Assert.Equal(expected, Utilities.BinaryToHex(minisignSignature.KeyId));
+            Assert.Equal(expected, Utilities.BinaryToHex(minisignPublicKey.KeyId));
+
+            Assert.True(Core.ValidateHashedSignature(file, minisignSignature, minisignPublicKey));
+            File.Delete(signedFile);
+        }
+
+        [Fact]
+        public void SignAndValidateHashed2Test()
+        {
+            const string expected = "9d6f33b5e347042e";
+            const string seckeypass = "7e725ac9f52336f74dc54bbe2912855f79baacc08b008437809fq5527f1b2256";
+            const string privateKey = "456453634232aeb543fbea3467ad996ac237b38646bcbc12e6232fbc0a8cd9a1ed46c7263af200000002000000000000004000000000992f22d875591d3bb7dc3f77caba3229e2f7b8afe655140bafabcb6c5d8b259366a2897624de65743de71f8f2dcc545a96c4b530ffd796d92f35eb02425f4196ab9a37ff2f542774d676625f8de689fa2da3e0a0250efd58347c35b927ca49ec4d93687be59d6e1a";
+            var minisignPrivateKey = Core.LoadPrivateKey(Utilities.HexToBinary(privateKey), Encoding.UTF8.GetBytes(seckeypass));
+
+            var file = Path.Combine("Data", "testfile.jpg");
+            var fileBinary = File.ReadAllBytes(file);
+            var signedFile = Core.SignHashed(file, minisignPrivateKey);
+
+            var minisignSignature = Core.LoadSignatureFromFile(signedFile);
+            var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test.pub"));
+            Assert.Equal(expected, Utilities.BinaryToHex(minisignSignature.KeyId));
+            Assert.Equal(expected, Utilities.BinaryToHex(minisignPublicKey.KeyId));
+
+            Assert.True(Core.ValidateHashedSignature(fileBinary, minisignSignature, minisignPublicKey));
             File.Delete(signedFile);
         }
 
@@ -73,10 +114,10 @@ namespace Tests
             var file = Path.Combine("Data", "testfile.jpg");
             var fileBinary = File.ReadAllBytes(file);
 
-            var minisignSignature = Core.LoadSignatureFromFile(Path.Combine("Data", "test.jpg.minisig"));
+            var minisignSignature = Core.LoadSignatureFromFile(Path.Combine("Data", "test.jpg.minisig-legacy"));
             var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test.pub"));
 
-            Assert.True(Core.ValidateSignature(file, minisignSignature, minisignPublicKey));
+            Assert.True(Core.ValidateLegacySignature(file, minisignSignature, minisignPublicKey));
         }
 
         [Fact]
@@ -85,10 +126,10 @@ namespace Tests
             var file = Path.Combine("Data", "testfile.jpg");
             var fileBinary = File.ReadAllBytes(file);
 
-            var minisignSignature = Core.LoadSignatureFromFile(Path.Combine("Data", "test.jpg.minisig-hashed"));
-            var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test2.pub"));
+            var minisignSignature = Core.LoadSignatureFromFile(Path.Combine("Data", "test.jpg.minisig"));
+            var minisignPublicKey = Core.LoadPublicKeyFromFile(Path.Combine("Data", "test.pub"));
 
-            Assert.True(Core.ValidateSignature(file, minisignSignature, minisignPublicKey));
+            Assert.True(Core.ValidateHashedSignature(file, minisignSignature, minisignPublicKey));
         }
 
         [Fact]
@@ -96,7 +137,7 @@ namespace Tests
         {
             const string expected = "9d6f33b5e347042e";
             const string signatureString = "RWSdbzO140cELi+edKSQMZw/yrCDB3aetMNoPYsESNapZuUfHeE8JunmfFNykkZbXWRMy+0Y8aaONyhdGSZtbEXlw32RpDtMmgw=";
-            const string trustedComment = "trusted comment: timestamp: 1439294334 file: testfile.jpg";
+            const string trustedComment = "trusted comment: timestamp: 1439294334   file: testfile.jpg";
             const string globalSignature = "sXw0VdGKvIgZibPYp9bR5jz01dRkBbWzEBFLpY/+u7MGwk4HJT/Kj8aB1iXW3w6n9/gSv33cd2sk7uDVFclIAA==";
             var minisignSignature = Core.LoadSignatureFromString(signatureString, trustedComment, globalSignature);
             Assert.Equal(expected, Utilities.BinaryToHex(minisignSignature.KeyId));
