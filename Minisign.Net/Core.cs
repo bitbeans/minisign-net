@@ -54,87 +54,10 @@ namespace Minisign
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="PathTooLongException"></exception>
 		/// <exception cref="NotSupportedException"></exception>
-		public static string SignLegacy(string fileToSign, MinisignPrivateKey minisignPrivateKey, string untrustedComment = "",
+		public static string Sign(string fileToSign, MinisignPrivateKey minisignPrivateKey, string untrustedComment = "",
 			string trustedComment = "", string outputFolder = "")
 		{
-			if (fileToSign != null && !File.Exists(fileToSign))
-			{
-				throw new FileNotFoundException("could not find fileToSign");
-			}
-
-			if (minisignPrivateKey == null)
-				throw new ArgumentException("missing minisignPrivateKey input", nameof(minisignPrivateKey));
-
-			if (string.IsNullOrEmpty(untrustedComment))
-			{
-				untrustedComment = DefaultComment;
-			}
-
-			if (string.IsNullOrEmpty(trustedComment))
-			{
-				var timestamp = GetTimestamp();
-				var filename = Path.GetFileName(fileToSign);
-				trustedComment = "timestamp: " + timestamp + "	file: " + filename;
-			}
-
-			if ((CommentPrefix + untrustedComment).Length > CommentMaxBytes)
-			{
-				throw new ArgumentOutOfRangeException(nameof(untrustedComment), "untrustedComment too long");
-			}
-
-			if ((TrustedCommentPrefix + trustedComment).Length > TrustedCommentMaxBytes)
-			{
-				throw new ArgumentOutOfRangeException(nameof(trustedComment), "trustedComment too long");
-			}
-
-			if (string.IsNullOrEmpty(outputFolder))
-			{
-				outputFolder = Path.GetDirectoryName(fileToSign);
-			}
-
-			//validate the outputFolder
-			if (string.IsNullOrEmpty(outputFolder) || !Directory.Exists(outputFolder))
-			{
-				throw new DirectoryNotFoundException("outputFolder must exist");
-			}
-
-			if (outputFolder.IndexOfAny(Path.GetInvalidPathChars()) > -1)
-				throw new ArgumentException("The given path to the output folder contains invalid characters!");
-
-			var file = LoadMessageFile(fileToSign);
-
-			var minisignSignature = new MinisignSignature
-			{
-				KeyId = minisignPrivateKey.KeyId,
-				SignatureAlgorithm = Encoding.UTF8.GetBytes(SigalgLegacy)
-			};
-			var signature = PublicKeyAuth.SignDetached(file, minisignPrivateKey.SecretKey);
-			minisignSignature.Signature = signature;
-
-			var binarySignature = ArrayHelpers.ConcatArrays(
-				minisignSignature.SignatureAlgorithm,
-				minisignSignature.KeyId,
-				minisignSignature.Signature
-				);
-
-			// sign the signature and the trusted comment with a global signature
-			var globalSignature =
-				PublicKeyAuth.SignDetached(
-					ArrayHelpers.ConcatArrays(minisignSignature.Signature, Encoding.UTF8.GetBytes(trustedComment)),
-					minisignPrivateKey.SecretKey);
-
-			// prepare the file lines
-			var signatureFileContent = new[]
-			{
-				CommentPrefix + untrustedComment,
-				Convert.ToBase64String(binarySignature),
-				TrustedCommentPrefix + trustedComment,
-				Convert.ToBase64String(globalSignature)
-			};
-
-			var outputFile = fileToSign + SigSuffix;
-			File.WriteAllLines(outputFile, signatureFileContent);
-			return outputFile;
+			return SignHashed(fileToSign, minisignPrivateKey, untrustedComment, trustedComment, outputFolder);
 		}
 
 		/// <summary>
@@ -210,6 +133,109 @@ namespace Minisign
 			{
 				KeyId = minisignPrivateKey.KeyId,
 				SignatureAlgorithm = Encoding.UTF8.GetBytes(SigalgHashed)
+			};
+			var signature = PublicKeyAuth.SignDetached(file, minisignPrivateKey.SecretKey);
+			minisignSignature.Signature = signature;
+
+			var binarySignature = ArrayHelpers.ConcatArrays(
+				minisignSignature.SignatureAlgorithm,
+				minisignSignature.KeyId,
+				minisignSignature.Signature
+				);
+
+			// sign the signature and the trusted comment with a global signature
+			var globalSignature =
+				PublicKeyAuth.SignDetached(
+					ArrayHelpers.ConcatArrays(minisignSignature.Signature, Encoding.UTF8.GetBytes(trustedComment)),
+					minisignPrivateKey.SecretKey);
+
+			// prepare the file lines
+			var signatureFileContent = new[]
+			{
+				CommentPrefix + untrustedComment,
+				Convert.ToBase64String(binarySignature),
+				TrustedCommentPrefix + trustedComment,
+				Convert.ToBase64String(globalSignature)
+			};
+
+			var outputFile = fileToSign + SigSuffix;
+			File.WriteAllLines(outputFile, signatureFileContent);
+			return outputFile;
+		}
+
+		/// <summary>
+		///     Sign a file with a MinisignPrivateKey.
+		/// </summary>
+		/// <param name="fileToSign">The full path to the file.</param>
+		/// <param name="minisignPrivateKey">A valid MinisignPrivateKey to sign.</param>
+		/// <param name="untrustedComment">An optional untrusted comment.</param>
+		/// <param name="trustedComment">An optional trusted comment.</param>
+		/// <param name="outputFolder">The folder to write the signature (optional).</param>
+		/// <returns>The full path to the signed file.</returns>
+		/// <exception cref="FileNotFoundException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		/// <exception cref="OverflowException"></exception>
+		/// <exception cref="DirectoryNotFoundException"></exception>
+		/// <exception cref="IOException"></exception>
+		/// <exception cref="UnauthorizedAccessException"></exception>
+		/// <exception cref="SecurityException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="PathTooLongException"></exception>
+		/// <exception cref="NotSupportedException"></exception>
+		public static string SignLegacy(string fileToSign, MinisignPrivateKey minisignPrivateKey, string untrustedComment = "",
+			string trustedComment = "", string outputFolder = "")
+		{
+			if (fileToSign != null && !File.Exists(fileToSign))
+			{
+				throw new FileNotFoundException("could not find fileToSign");
+			}
+
+			if (minisignPrivateKey == null)
+				throw new ArgumentException("missing minisignPrivateKey input", nameof(minisignPrivateKey));
+
+			if (string.IsNullOrEmpty(untrustedComment))
+			{
+				untrustedComment = DefaultComment;
+			}
+
+			if (string.IsNullOrEmpty(trustedComment))
+			{
+				var timestamp = GetTimestamp();
+				var filename = Path.GetFileName(fileToSign);
+				trustedComment = "timestamp: " + timestamp + "	file: " + filename;
+			}
+
+			if ((CommentPrefix + untrustedComment).Length > CommentMaxBytes)
+			{
+				throw new ArgumentOutOfRangeException(nameof(untrustedComment), "untrustedComment too long");
+			}
+
+			if ((TrustedCommentPrefix + trustedComment).Length > TrustedCommentMaxBytes)
+			{
+				throw new ArgumentOutOfRangeException(nameof(trustedComment), "trustedComment too long");
+			}
+
+			if (string.IsNullOrEmpty(outputFolder))
+			{
+				outputFolder = Path.GetDirectoryName(fileToSign);
+			}
+
+			//validate the outputFolder
+			if (string.IsNullOrEmpty(outputFolder) || !Directory.Exists(outputFolder))
+			{
+				throw new DirectoryNotFoundException("outputFolder must exist");
+			}
+
+			if (outputFolder.IndexOfAny(Path.GetInvalidPathChars()) > -1)
+				throw new ArgumentException("The given path to the output folder contains invalid characters!");
+
+			var file = LoadMessageFile(fileToSign);
+
+			var minisignSignature = new MinisignSignature
+			{
+				KeyId = minisignPrivateKey.KeyId,
+				SignatureAlgorithm = Encoding.UTF8.GetBytes(SigalgLegacy)
 			};
 			var signature = PublicKeyAuth.SignDetached(file, minisignPrivateKey.SecretKey);
 			minisignSignature.Signature = signature;
@@ -379,7 +405,7 @@ namespace Minisign
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public static bool ValidateLegacySignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
+		public static bool ValidateSignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
 		{
 			if (filePath != null && !File.Exists(filePath))
 				throw new FileNotFoundException("could not find filePath");
@@ -392,17 +418,48 @@ namespace Minisign
 
 			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
 
+			if (signature.IsHashed)
+			{
+				return ValidateHashedSignature(filePath, signature, publicKey);
+			}
+			else
+			{
+				return ValidateLegacySignature(filePath, signature, publicKey);
+			}
+		}
 
-			var file = LoadMessageFile(filePath);
+		/// <summary>
+		///     Validate a file with a MinisignSignature and a MinisignPublicKey object.
+		/// </summary>
+		/// <param name="message">The message to validate.</param>
+		/// <param name="signature">A valid MinisignSignature object.</param>
+		/// <param name="publicKey">A valid MinisignPublicKey object.</param>
+		/// <returns><c>true</c> if valid; otherwise, <c>false</c>.</returns>
+		/// <exception cref="OverflowException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public static bool ValidateSignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
+		{
+			if (message == null)
+				throw new ArgumentException("missing signature input", nameof(message));
 
-			// Legacy: Ed25519(message)
-			if (!PublicKeyAuth.VerifyDetached(signature.Signature, file, publicKey.PublicKey)) return false;
+			if (signature == null)
+				throw new ArgumentException("missing signature input", nameof(signature));
 
-			// Global signature is the same for both formats
-			return PublicKeyAuth.VerifyDetached(
-				signature.GlobalSignature,
-				ArrayHelpers.ConcatArrays(signature.Signature, signature.TrustedComment),
-				publicKey.PublicKey);
+			if (publicKey == null)
+				throw new ArgumentException("missing publicKey input", nameof(publicKey));
+
+			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
+
+			if (signature.IsHashed)
+			{
+				return ValidateHashedSignature(message, signature, publicKey);
+			}
+			else
+			{
+				return ValidateLegacySignature(message, signature, publicKey);
+			}
 		}
 
 		/// <summary>
@@ -452,7 +509,7 @@ namespace Minisign
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public static bool ValidateLegacySignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
+		public static bool ValidateHashedSignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
 		{
 			if (message == null)
 				throw new ArgumentException("missing signature input", nameof(message));
@@ -465,9 +522,47 @@ namespace Minisign
 
 			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
 
-			// Legacy: Ed25519(message)
-			if (!PublicKeyAuth.VerifyDetached(signature.Signature, message, publicKey.PublicKey)) return false;
+			// Hashed: Ed25519(Blake2b-512(message))
+			var blake = GenericHash.Hash(message, null, 64);
+			if (!PublicKeyAuth.VerifyDetached(signature.Signature, blake, publicKey.PublicKey)) return false;
 
+			return PublicKeyAuth.VerifyDetached(
+				signature.GlobalSignature,
+				ArrayHelpers.ConcatArrays(signature.Signature, signature.TrustedComment),
+				publicKey.PublicKey);
+		}
+
+		/// <summary>
+		///     Validate a file with a MinisignSignature and a MinisignPublicKey object.
+		/// </summary>
+		/// <param name="filePath">The full path to the file.</param>
+		/// <param name="signature">A valid MinisignSignature object.</param>
+		/// <param name="publicKey">A valid MinisignPublicKey object.</param>
+		/// <returns><c>true</c> if valid; otherwise, <c>false</c>.</returns>
+		/// <exception cref="FileNotFoundException"></exception>
+		/// <exception cref="OverflowException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		public static bool ValidateLegacySignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
+		{
+			if (filePath != null && !File.Exists(filePath))
+				throw new FileNotFoundException("could not find filePath");
+
+			if (signature == null)
+				throw new ArgumentException("missing signature input", nameof(signature));
+
+			if (publicKey == null)
+				throw new ArgumentException("missing publicKey input", nameof(publicKey));
+
+			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
+
+			var file = LoadMessageFile(filePath);
+
+			// Legacy: Ed25519(message)
+			if (!PublicKeyAuth.VerifyDetached(signature.Signature, file, publicKey.PublicKey)) return false;
+
+			// Global signature is the same for both formats
 			return PublicKeyAuth.VerifyDetached(
 				signature.GlobalSignature,
 				ArrayHelpers.ConcatArrays(signature.Signature, signature.TrustedComment),
@@ -485,7 +580,7 @@ namespace Minisign
 		/// <exception cref="ArgumentNullException"></exception>
 		/// <exception cref="ArgumentException"></exception>
 		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		public static bool ValidateHashedSignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
+		public static bool ValidateLegacySignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
 		{
 			if (message == null)
 				throw new ArgumentException("missing signature input", nameof(message));
@@ -498,9 +593,8 @@ namespace Minisign
 
 			if (!ArrayHelpers.ConstantTimeEquals(signature.KeyId, publicKey.KeyId)) return false;
 
-			// Hashed: Ed25519(Blake2b-512(message))
-			var blake = GenericHash.Hash(message, null, 64);
-			if (!PublicKeyAuth.VerifyDetached(signature.Signature, blake, publicKey.PublicKey)) return false;
+			// Legacy: Ed25519(message)
+			if (!PublicKeyAuth.VerifyDetached(signature.Signature, message, publicKey.PublicKey)) return false;
 
 			return PublicKeyAuth.VerifyDetached(
 				signature.GlobalSignature,
@@ -616,11 +710,13 @@ namespace Minisign
 			{
 				// Legacy minisign: Ed + keyid(8) + raw signature
 				result.Signature = ArrayHelpers.SubArray(signature, 10);
+				result.IsHashed = false;
 			}
 			else
 			{
 				// Hashed minisign: ED + keyid(8) + signature(64)
 				result.Signature = ArrayHelpers.SubArray(signature, 10, 64);
+				result.IsHashed = true;
 			}
 
 			return result;
