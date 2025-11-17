@@ -11,6 +11,10 @@ Minisign.Net is a .NET port of [minisign](https://github.com/jedisct1/minisign) 
 ### Sign a file
 ```csharp
 public static string Sign(string fileToSign, MinisignPrivateKey minisignPrivateKey, string untrustedComment = "", string trustedComment = "", string outputFolder = "")
+
+public static string SignHashed(string fileToSign, MinisignPrivateKey minisignPrivateKey, string untrustedComment = "", string trustedComment = "", string outputFolder = "")
+
+public static string SignLegacy(string fileToSign, MinisignPrivateKey minisignPrivateKey, string untrustedComment = "", string trustedComment = "", string outputFolder = "")
 ```
 
 ### Validate a file
@@ -18,6 +22,14 @@ public static string Sign(string fileToSign, MinisignPrivateKey minisignPrivateK
 public static bool ValidateSignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
 
 public static bool ValidateSignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
+
+public static bool ValidateHashedSignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
+
+public static bool ValidateHashedSignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
+
+public static bool ValidateLegacySignature(string filePath, MinisignSignature signature, MinisignPublicKey publicKey)
+
+public static bool ValidateLegacySignature(byte[] message, MinisignSignature signature, MinisignPublicKey publicKey)
 ```
 
 ### Generate a key pair
